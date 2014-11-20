@@ -80,6 +80,12 @@ class SmoothServo
       setPosition(0.5);
     }
     
+    boolean transitionInProgress()
+    {
+      if(_transition == NULL) return false;
+      return _transition->inProgress();
+    }
+    
   private:
     void setPosition(float position)
     {

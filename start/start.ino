@@ -4,6 +4,7 @@
 #include "scenario.h"
 
 Head* head;
+Scenario* scenario;
 
 void setup() 
 {
@@ -14,34 +15,19 @@ void setup()
   head->reset();
   delay(2000);
   
-  Scenario scenario = 
-    Scenario(head)
-      .toPosition(0.5, 0.8)
-      .toPosition(0.5, 0.8)
-      .toPosition(0.5, 0.8)
-      .toPosition(0.5, 0.8);
+  (scenario = new Scenario(head))
+    ->toPosition(0.5, 0.8)
+    ->toPosition(0.5, 0.7)
+    ->toPosition(0.3, 0.7)
+    ->toPosition(0.3, 0.4)
+    ->toPosition(0.5, 0.5);
   
-  scenario.start();
-  
-  
-  /*
-  //asynchroniously moves servo smoothly for 2 sec
-  tiltServo.startMovingSmoothly(1, 2000); 
-  update(2000); //runs update loop for 2 sec
-  
-  tiltServo.startMovingSmoothly({
-    {0, 1000}, 
-    {1, 500},
-    {0.5, 1500}
-  });
-  
-  tiltServo.startMovingSmoothly({ 0, 1, 0.5 });
-*/
+  scenario->start();
 }
 
 void loop() 
 { 
-  head->update();
+  scenario->update();
 }
 
 

@@ -21,7 +21,7 @@ struct Action
 
 class Scenario 
 {
-  Head*   _head;
+  Head*             _head;
   QueueList<Action> _actionsQueue;
   
   public:
@@ -31,14 +31,27 @@ class Scenario
     
     void start()
     {
-            
-      
+      startNextAction();
     }
     
-    Scenario& toPosition(float pan, float tilt)
+    void startNextAction()
+    {
+      Action action = _actionsQueue.pop();
+      _head->startMoving(action.pan, action.tilt);
+    }
+    
+    void update()
+    {
+      _head->update();
+      
+      if(_head->transitionFinished() && _actionsQueue.isNotEmpty()) 
+        startNextAction();
+    }
+    
+    Scenario* toPosition(float pan, float tilt)
     {
       _actionsQueue.push(Action(Move, pan, tilt));
-      return *this;
+      return this;
     }
     
   private:

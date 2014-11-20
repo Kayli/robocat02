@@ -69,6 +69,8 @@ class QueueList {
 
     // check if the queue is empty.
     bool isEmpty () const;
+    
+    bool isNotEmpty () const;
 
     // get the number of items in the queue.
     int count () const;
@@ -188,6 +190,12 @@ T QueueList<T>::peek () const {
 template<typename T>
 bool QueueList<T>::isEmpty () const {
   return head == NULL;
+}
+
+// check if the queue is not empty.
+template<typename T>
+bool QueueList<T>::isNotEmpty () const {
+  return head != NULL;
 }
 
 // get the number of items in the queue.

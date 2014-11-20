@@ -53,6 +53,12 @@ class Head
       _tiltServo.reset();
     }
     
+    boolean transitionFinished()
+    {
+      boolean transitionInProgress = _panServo.transitionInProgress() || _tiltServo.transitionInProgress();
+      return !transitionInProgress;
+    }
+    
     void update()
     {
       _panServo.update();
