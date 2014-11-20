@@ -1,18 +1,27 @@
 #include <Servo.h>
 #include "utils.h"
 #include "head.h"
+#include "scenario.h"
 
 Head* head;
 
 void setup() 
 {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   
   head = new Head();
+  
   head->reset();
-    
-  //synchroniously moves servo as fast as possible
-  //head->move(0.5, 0.3);
+  delay(2000);
+  
+  Scenario scenario = 
+    Scenario(head)
+      .toPosition(0.5, 0.8)
+      .toPosition(0.5, 0.8)
+      .toPosition(0.5, 0.8)
+      .toPosition(0.5, 0.8);
+  
+  scenario.start();
   
   
   /*
@@ -33,17 +42,6 @@ void setup()
 void loop() 
 { 
   head->update();
-  
-  /*
-  head.move(0, 0);
-  head.move(0, 50);
-  delay(1000);
-  head.move(20, 30);
-  
-  delay(1000);
-  head.move(20, 50);
-  delay(500);
-  */
 }
 
 

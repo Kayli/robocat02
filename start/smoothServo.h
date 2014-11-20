@@ -11,17 +11,20 @@ class SmoothServo
     Servo               _servo;
     float               _position;
     Transition<float>*  _transition;
+    int _pin;
       
     const int    _signalMin; 
     const int    _signalMax; 
     
   public:
-    SmoothServo(int pin, int signalMin = 500, int signalMax = 1500) :
+    SmoothServo(int pin, int signalMin = 500, int signalMax = 2400) :
       _signalMin(signalMin),
       _signalMax(signalMax),
-      _transition(NULL)
+      _transition(NULL),
+      _pin(pin)
     {
       _servo.attach(pin);
+      reset();
     }
     
     ~SmoothServo()
@@ -49,6 +52,7 @@ class SmoothServo
       
       if(!_transition) 
       {
+        log("creating transition for pin %d, from %f to %f", _pin, _position, position);
         _transition = new Transition<float>(_position, position); //transitioning from old position to new position
         _transition->start();
         update();
@@ -66,7 +70,7 @@ class SmoothServo
         _transition = NULL;
         return;
       }
-      log("update works!");
+      //log("update works!");
       float value = _transition->getValue();
       setPosition(value);
     }
@@ -79,9 +83,11 @@ class SmoothServo
   private:
     void setPosition(float position)
     {
-      log("position is %f", position);
+      log("servo on pin %d position is %f", _pin, position);
+      if(_transition) _transition->trace();
+      
       int signal = ((_signalMax - _signalMin) * position) + _signalMin;
-      log("signal is %d", signal);
+      //log("signal is %d", signal);
       _servo.writeMicroseconds(signal);
       _position = position;
     }

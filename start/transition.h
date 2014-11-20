@@ -27,20 +27,21 @@ class Transition
   
     void start()
     {
-      log("Transition::start");
+      //log("Transition::start");
       _startTime = millis(); 
       _endTime = _startTime + _durationMsec;
       
-      log("_startTime=%d", _startTime);
-      log("_endTime=%d", _endTime);
+      //log("_startTime=%d", _startTime);
+      //log("_endTime=%d", _endTime);
     }
     
     T getValue()
     {
       if(_isFinished) return _finish;
+      if(_start == _finish) return _finish;
       
       int timeFromStartMsec = getTimeFromStart();  
-      log("timeFromStartMsec=%d", timeFromStartMsec);   
+      //log("timeFromStartMsec=%d", timeFromStartMsec);   
       
       T amountOfChange = _finish - _start;
       T value = easeInOut(timeFromStartMsec, _start, amountOfChange);
@@ -53,12 +54,19 @@ class Transition
     boolean isFinished()
     {
       if(getTimeFromStart() > _durationMsec) _isFinished = true;
+      if(_start == _finish) _isFinished = true;
       return _isFinished;
     }
     
     boolean inProgress()
     {
       return !isFinished();
+    }
+    
+    void trace()
+    {
+      log("_stat=%f", _start);
+      log("_finish=%f", _finish);
     }
   
    private:
