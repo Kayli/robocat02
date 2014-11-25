@@ -46,7 +46,11 @@ class Transition
       T amountOfChange = _finish - _start;
       T value = easeInOut(timeFromStartMsec, _start, amountOfChange);
       
-      if(timeFromStartMsec > _durationMsec) _isFinished = true;
+      if(timeFromStartMsec > _durationMsec) 
+      {
+        _isFinished = true;
+        return _finish;
+      }
       
       return value;
     }

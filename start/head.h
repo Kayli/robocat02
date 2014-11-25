@@ -30,18 +30,15 @@ class Head
       _tiltServo.move(tilt);
     }
     
-    
-    
-    void startMoving(float pan, float tilt) 
+    void startMoving(float pan, float tilt, int durationMsec = 1000) 
     {
       if(pan < 0 || pan > 1) error("pan is out of range");
       if(tilt < 0 || tilt > 1) error("tilt is out of range");
       
-      _panServo.startMoving(pan);
-      _tiltServo.startMoving(tilt);
+      _panServo.startMoving(pan, durationMsec);
+      _tiltServo.startMoving(tilt, durationMsec);
     }
     
-      
     void moveLeftRight(int pan)
     {
       _panServo.move(pan);

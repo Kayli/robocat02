@@ -37,23 +37,29 @@ class SmoothServo
       setPosition(position);
     }
     
-    void startMoving(float position)
+    void startMoving(float position, int durationMsec = 1000)
     {
       if(position < 0 || position > 1) 
       {
-        error("position is out of range. It should be between 0 and 1");
+        log("position is out of range. It should be between 0 and 1");
         return;
       }
       if(_transition->inProgress())
       {
-        error("previous transition is still in progress");
+        log("previous transition is still in progress");
         return;
+      }
+      
+      if(_transition) 
+      {
+        delete _transition;
+        _transition = NULL;
       }
       
       if(!_transition) 
       {
         log("creating transition for pin %d, from %f to %f", _pin, _position, position);
-        _transition = new Transition<float>(_position, position); //transitioning from old position to new position
+        _transition = new Transition<float>(_position, position, durationMsec); //transitioning from old position to new position
         _transition->start();
         update();
       }
@@ -90,7 +96,7 @@ class SmoothServo
     void setPosition(float position)
     {
       log("servo on pin %d position is %f", _pin, position);
-      if(_transition) _transition->trace();
+      //if(_transition) _transition->trace();
       
       int signal = ((_signalMax - _signalMin) * position) + _signalMin;
       //log("signal is %d", signal);

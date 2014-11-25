@@ -5,6 +5,8 @@
 
 enum ActionType { Move, Delay };
 
+enum ScenarioStatus { Started, Stopped };
+
 struct Action 
 {
   Action(ActionType ptype, float ppan, float ptilt) 
@@ -23,9 +25,10 @@ class Scenario
 {
   Head*             _head;
   QueueList<Action> _actionsQueue;
-  
+  ScenarioStatus    _status;
+  int               _transitionTimeMsec;
   public:
-    Scenario(Head* head) : _head(head)
+    Scenario(Head* head, int transitionTimeMsec = 1000) : _head(head), _status(Stopped), _transitionTimeMsec(transitionTimeMsec)
     {
     }
     
@@ -34,18 +37,35 @@ class Scenario
       startNextAction();
     }
     
+    ScenarioStatus getStatus()
+    {
+      return _status;
+    }
+    
     void startNextAction()
     {
       Action action = _actionsQueue.pop();
-      _head->startMoving(action.pan, action.tilt);
+      _head->startMoving(action.pan, action.tilt, _transitionTimeMsec);
+      _status = Started;
     }
     
     void update()
     {
+      if (_status == Stopped) return;
+      
       _head->update();
       
-      if(_head->transitionFinished() && _actionsQueue.isNotEmpty()) 
+      boolean transitionFinished = _head->transitionFinished();
+      if(transitionFinished && _actionsQueue.isNotEmpty()) 
+      {
         startNextAction();
+        transitionFinished = _head->transitionFinished();
+      }
+        
+      if(transitionFinished && _actionsQueue.isEmpty())
+        _status = Stopped; 
+        
+      log("_actionsQueue.count is %d. Transition finished: %d", _actionsQueue.count(), transitionFinished);
     }
     
     Scenario* toPosition(float pan, float tilt)
